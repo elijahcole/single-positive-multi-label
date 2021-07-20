@@ -234,7 +234,7 @@ if __name__ == '__main__':
         },
         'expected_num_pos': {
             'pascal': 1.5,
-            'coco': 2.5,
+            'coco': 2.9,
             'nuswide': 1.9,
             'cub': 31.4
         }
