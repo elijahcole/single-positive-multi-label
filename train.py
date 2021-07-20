@@ -315,24 +315,26 @@ if __name__ == '__main__':
             P['lr'] = lr
             P['save_path'] = './results/' + P['experiment_name'] + '_' + now_str + '_' + P['dataset']
             os.makedirs(P['save_path'], exist_ok=False)
-            (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P, feature_extractor=None, linear_classifier=None)
+            P_temp = copy.deepcopy(P) # re-set hyperparameter dict
+            (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P_temp, feature_extractor=None, linear_classifier=None)
             if P['train_mode'] == 'linear_init':
-                P['save_path'] = './results/' + P['experiment_name'] + '_' + now_str + '_' + P['dataset'] + '_fine_tuned_from_linear'
-                os.makedirs(P['save_path'], exist_ok=False)
-                P['train_mode'] = 'end_to_end'
-                P['num_epochs'] = 10
-                P['freeze_feature_extractor'] = False
-                P['use_feats'] = False
-                P['arch'] = 'resnet50'
-                (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P, feature_extractor=feature_extractor, linear_classifier=linear_classifier, estimated_labels=estimated_labels)
+                P_temp = copy.deepcopy(P) # re-set hyperparameter dict
+                P_temp['save_path'] = P['save_path'] + '_fine_tuned_from_linear'
+                os.makedirs(P_temp['save_path'], exist_ok=False)
+                P_temp['train_mode'] = 'end_to_end'
+                P_temp['num_epochs'] = 10
+                P_temp['freeze_feature_extractor'] = False
+                P_temp['use_feats'] = False
+                P_temp['arch'] = 'resnet50'
+                (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P_temp, feature_extractor=feature_extractor, linear_classifier=linear_classifier, estimated_labels=estimated_labels)
             # keep track of the best run: 
-            best_epoch = np.argmax([logs['metrics']['val'][epoch][P['stop_metric'] + '_' + P['val_set_variant']] for epoch in range(P['num_epochs'])])
-            val_score = logs['metrics']['val'][best_epoch][P['stop_metric'] + '_' + P['val_set_variant']]
-            test_score = logs['metrics']['test'][best_epoch][P['stop_metric'] + '_clean']
+            best_epoch = np.argmax([logs['metrics']['val'][epoch][P_temp['stop_metric'] + '_' + P_temp['val_set_variant']] for epoch in range(P_temp['num_epochs'])])
+            val_score = logs['metrics']['val'][best_epoch][P_temp['stop_metric'] + '_' + P_temp['val_set_variant']]
+            test_score = logs['metrics']['test'][best_epoch][P_temp['stop_metric'] + '_clean']
             if val_score > best_val_score:
                 best_val_score = val_score
                 best_test_score = test_score
-                best_params = copy.deepcopy(P)
+                best_params = copy.deepcopy(P_temp)
     # report the best run:
     print('best run: {}'.format(best_params['save_path']))
     print('- learning rate: {}'.format(best_params['lr']))
