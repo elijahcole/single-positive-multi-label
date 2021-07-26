@@ -27,3 +27,20 @@ As written, `train.py` will run a hyperparameter search over a few different lea
 * The `requirements.txt` files was generated using the wonderful tool [pipreqs](https://github.com/bndr/pipreqs).
 * Please feel free to get in touch / open an issue if anything is unclear.
 * Only PASCAL and COCO are set up right now. NUSWIDE and CUB will be added soon. 
+
+## Reference  
+If you find our work useful in your research please consider citing our paper:  
+
+```latex
+@inproceedings{cole2021multi,
+  title={Multi-Label Learning from Single Positive Labels},
+  author={Cole, Elijah and 
+          Mac Aodha, Oisin and 
+          Lorieul, Titouan and 
+          Perona, Pietro and 
+          Morris, Dan and 
+          Jojic, Nebojsa},
+  booktitle={Conference on Computer Vision and Pattern Recognition},
+  year={2021}
+}
+```
