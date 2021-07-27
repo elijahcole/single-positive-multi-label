@@ -40,7 +40,7 @@ If you find our work useful in your research please consider citing our paper:
           Perona, Pietro and 
           Morris, Dan and 
           Jojic, Nebojsa},
-  booktitle={Conference on Computer Vision and Pattern Recognition},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
   year={2021}
 }
 ```
