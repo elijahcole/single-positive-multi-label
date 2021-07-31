@@ -6,23 +6,23 @@
 ```
 cd /path/to/single-positive/multi-label/data/pascal
 ```
-1. Download the data:
+2. Download the data:
 ```
 curl http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar --output pascal_raw.tar
 ```
-1. Extract the data:
+3. Extract the data:
 ```
 tar -xf pascal_raw.tar
 ```
-1. Format the data:
+4. Format the data:
 ```
 python format_pascal.py
 ```
-1. Clean up:
+5. Clean up:
 ```
 rm pascal_raw.tar
 ```
-1. Download the pre-extracted features for PASCAL from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/pascal`.
+6. Download the pre-extracted features for PASCAL from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/pascal`.
 
 ## COCO
 
@@ -30,28 +30,28 @@ rm pascal_raw.tar
 ```
 cd /path/to/single-positive/multi-label/data/coco
 ```
-1. Download the data:
+2. Download the data:
 ```
 curl http://images.cocodataset.org/annotations/annotations_trainval2014.zip --output coco_annotations.zip
 curl http://images.cocodataset.org/zips/train2014.zip --output coco_train_raw.zip
 curl http://images.cocodataset.org/zips/val2014.zip --output coco_val_raw.zip
 ```
-1. Extract the data:
+3. Extract the data:
 ```
 unzip -q coco_annotations.zip
 unzip -q coco_train_raw.zip
 unzip -q coco_val_raw.zip
 ```
-1. Format the data:
+4. Format the data:
 ```
 python format_coco.py
 ```
-1. Clean up:
+5. Clean up:
 ```
 rm coco_train_raw.zip
 rm coco_val_raw.zip
 ```
-1. Download the pre-extracted features for COCO from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/coco`.
+6. Download the pre-extracted features for COCO from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/coco`.
 
 ## NUSWIDE
 
