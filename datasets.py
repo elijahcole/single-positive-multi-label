@@ -24,7 +24,7 @@ def get_metadata(dataset_name):
         meta = {
             'num_classes': 81,
             'path_to_dataset': 'data/nuswide',
-            'path_to_images': ''
+            'path_to_images': 'data/nuswide/Flickr'
         }
     elif dataset_name == 'cub':
         meta = {
@@ -105,7 +105,7 @@ def get_data(P):
     elif P['dataset'] == 'pascal':
         ds = multilabel(P, tx).get_datasets()
     elif P['dataset'] == 'nuswide':
-        raise NotImplementedError('Coming soon!')
+        ds = multilabel(P, tx).get_datasets()
     elif P['dataset'] == 'cub':
         raise NotImplementedError('Coming soon!')
     else:

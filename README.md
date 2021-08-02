@@ -26,7 +26,8 @@ As written, `train.py` will run a hyperparameter search over a few different lea
 ## Misc
 * The `requirements.txt` files was generated using the wonderful tool [pipreqs](https://github.com/bndr/pipreqs).
 * Please feel free to get in touch / open an issue if anything is unclear.
-* Only PASCAL and COCO are set up right now. NUSWIDE and CUB will be added soon. 
+* Only PASCAL, COCO, and NUSWIDE are set up right now. CUB will be added soon. 
+* In this paper we used only those images from NUSWIDE which were still publicly available when we re-crawled the dataset in 2020 using Namhyuk Ahn's [downloader](https://github.com/nmhkahn/NUS-WIDE-downloader). Following the instructions in `data/README.md` should yield the exact subset used for our experiments. 
 
 ## Reference  
 If you find our work useful in your research please consider citing our paper:  
