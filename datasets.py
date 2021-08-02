@@ -30,7 +30,7 @@ def get_metadata(dataset_name):
         meta = {
             'num_classes': 312,
             'path_to_dataset': 'data/cub',
-            'path_to_images': ''
+            'path_to_images': 'data/cub/CUB_200_2011'
         }
     else:
         raise NotImplementedError('Metadata dictionary not implemented.')
@@ -107,7 +107,7 @@ def get_data(P):
     elif P['dataset'] == 'nuswide':
         ds = multilabel(P, tx).get_datasets()
     elif P['dataset'] == 'cub':
-        raise NotImplementedError('Coming soon!')
+        ds = multilabel(P, tx).get_datasets()
     else:
         raise ValueError('Unknown dataset.')
     

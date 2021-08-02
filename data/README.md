@@ -14,15 +14,11 @@ curl http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar 
 ```
 tar -xf pascal_raw.tar
 ```
-4. Format the data:
-```
-python format_pascal.py
-```
-5. Clean up:
+4. Clean up:
 ```
 rm pascal_raw.tar
 ```
-6. Download the pre-extracted features for PASCAL from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/pascal`.
+5. Download the pre-extracted features for PASCAL from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/pascal`.
 
 ## COCO
 
@@ -42,16 +38,12 @@ unzip -q coco_annotations.zip
 unzip -q coco_train_raw.zip
 unzip -q coco_val_raw.zip
 ```
-4. Format the data:
-```
-python format_coco.py
-```
-5. Clean up:
+4. Clean up:
 ```
 rm coco_train_raw.zip
 rm coco_val_raw.zip
 ```
-6. Download the pre-extracted features for COCO from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/coco`.
+5. Download the pre-extracted features for COCO from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/coco`.
 
 ## NUSWIDE
 
@@ -85,11 +77,38 @@ from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them
 
 ## CUB
 
-Coming soon!
+1. Navigate to the CUB data directory:
+```
+cd /path/to/single-positive/multi-label/data/cub
+```
+2. Download `CUB_200_2011.tgz` from [here](http://www.vision.caltech.edu/visipedia-data/CUB-200-2011/CUB_200_2011.tgz) and move the resulting file to the CUB data directory, resulting in the full path:
+```
+/path/to/single-positive/multi-label/data/cub/CUB_200_2011.tgz
+```
+3. Extract the data:
+```
+tar -xf CUB_200_2011.tgz
+```
+4. Clean up:
+```
+rm CUB_200_2011.tgz
+```
+5. Download the pre-extracted features for CUB from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/cub`.
+
+# Formatting the Data
+The `preproc` folder contains a few scripts which can be used to produce uniformly formatted image lists and labels:
+```
+cd /path/to/single-positive/multi-label/preproc
+python format_coco.py
+python format_cub.py
+python format_pascal.py
+```
+Note that NUSWIDE does not have a formatting script. This is because we provide the formatted metadata directly.
 
 # Generating Observed Labels
-The script `generate_observed_labels.py` subsamples the entries of a complete label matrix to generate "observed labels" which simulate single positive labeling. To generate observed labels for each dataset, run:
+The script `preproc/generate_observed_labels.py` subsamples the entries of a complete label matrix to generate "observed labels" which simulate single positive labeling. To generate observed labels for a given dataset, run:
 ```
+cd /path/to/single-positive/multi-label/preproc
 python generate_observed_labels.py --dataset X
 ```
 where `X` is replaced by `pascal`, `coco`, `nuswide`, or `cub`. You will only need to do this once.
