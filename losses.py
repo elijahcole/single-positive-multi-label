@@ -32,11 +32,12 @@ def loss_bce(batch, P, Z):
     preds = batch['preds']
     observed_labels = batch['label_vec_obs']
     # input validation: 
-    assert not torch.any(observed_labels == 0)
+    assert not torch.any(observed_labels == -1)
+    assert P['train_set_variant'] == 'clean'
     # compute loss:
     loss_mtx = torch.zeros_like(observed_labels)
     loss_mtx[observed_labels == 1] = neg_log(preds[observed_labels == 1])
-    loss_mtx[observed_labels == -1] = neg_log(1.0 - preds[observed_labels == -1])
+    loss_mtx[observed_labels == 0] = neg_log(1.0 - preds[observed_labels == 0])
     reg_loss = None
     return loss_mtx, reg_loss
 
@@ -45,11 +46,12 @@ def loss_bce_ls(batch, P, Z):
     preds = batch['preds']
     observed_labels = batch['label_vec_obs']
     # input validation: 
-    assert not torch.any(observed_labels == 0)
+    assert not torch.any(observed_labels == -1)
+    assert P['train_set_variant'] == 'clean'
     # compute loss:
     loss_mtx = torch.zeros_like(observed_labels)
     loss_mtx[observed_labels == 1] = (1.0 - P['ls_coef']) * neg_log(preds[observed_labels == 1]) + P['ls_coef'] * neg_log(1.0 - preds[observed_labels == 1])
-    loss_mtx[observed_labels == -1] = (1.0 - P['ls_coef']) * neg_log(1.0 - preds[observed_labels == -1]) + P['ls_coef'] * neg_log(preds[observed_labels == -1])
+    loss_mtx[observed_labels == 0] = (1.0 - P['ls_coef']) * neg_log(1.0 - preds[observed_labels == 0]) + P['ls_coef'] * neg_log(preds[observed_labels == 0])
     reg_loss = None
     return loss_mtx, reg_loss
 
