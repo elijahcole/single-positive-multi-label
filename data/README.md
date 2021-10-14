@@ -73,6 +73,7 @@ formatted_train_images.npy
 formatted_val_images.npy
 ```
 from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/nuswide`. Note that these files correspond to the subset of the NUSWIDE dataset that we re-crawled ourselves. 
+
 6. Download the pre-extracted features for NUSWIDE from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/nuswide`.
 
 ## CUB
