@@ -243,9 +243,9 @@ if __name__ == '__main__':
     P = {}
     
     # Top-level parameters:
-    P['dataset'] = 'pascal' # pascal, coco, nuswide, cub
+    P['dataset'] = 'nuswide' # pascal, coco, nuswide, cub
     P['loss'] = 'role' # bce, bce_ls, iun, iu, pr, an, an_ls, wan, epr, role
-    P['train_mode'] = 'linear_fixed_features' # linear_fixed_features, end_to_end, linear_init
+    P['train_mode'] = 'linear_init' # linear_fixed_features, end_to_end, linear_init
     P['val_set_variant'] = 'clean' # clean, observed
     
     # Paths and filenames:
@@ -254,8 +254,8 @@ if __name__ == '__main__':
     P['save_path'] = './results'
 
     # Optimization parameters:
-    P['lr'] = 1e-4 # learning rate
-    P['bsize'] = 16 # batch size
+    P['linear_init_lr'] = 1e-3 # learning rate for linear_fixed_features phase of linear_init (try linear_fixed_features first to determine the right values)
+    P['linear_init_bsize'] = 16 # batch size for linear_fixed_features phase of linear_init (try linear_fixed_features first to determine the right values)
     P['lr_mult'] = 10.0 # learning rate multiplier for the parameters of g
     P['stop_metric'] = 'map' # metric used to select the best epoch
     
@@ -308,17 +308,26 @@ if __name__ == '__main__':
     best_bsize = None
     best_val_score = - np.Inf
     best_test_score = None
+    now_str = datetime.datetime.now().strftime("%Y_%m_%d_%X").replace(':','-')
+    if P['train_mode'] == 'linear_init':
+        print('training linear classifier with fixed hyperparameters:')
+        print('- linear_init_lr: {}'.format(P['linear_init_lr']))
+        print('- linear_init_bsize: {}'.format(P['linear_init_bsize']))
+        P['bsize'] = P['linear_init_bsize']
+        P['lr'] = P['linear_init_lr']
+        P['save_path'] = './results/' + P['experiment_name'] + '_' + now_str + '_' + P['dataset']
+        os.makedirs(P['save_path'], exist_ok=False)
+        P_temp = copy.deepcopy(P) # re-set hyperparameter dict
+        (feature_extractor_init, linear_classifier_init, estimated_labels_init, logs) = execute_training_run(P_temp, feature_extractor=None, linear_classifier=None)
+        print('fine-tuning from trained linear classifier')
     for bsize in [8, 16]:
         for lr in [1e-2, 1e-3, 1e-4, 1e-5]:
             now_str = datetime.datetime.now().strftime("%Y_%m_%d_%X").replace(':','-')
             P['bsize'] = bsize
             P['lr'] = lr
             P['save_path'] = './results/' + P['experiment_name'] + '_' + now_str + '_' + P['dataset']
-            os.makedirs(P['save_path'], exist_ok=False)
             P_temp = copy.deepcopy(P) # re-set hyperparameter dict
-            (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P_temp, feature_extractor=None, linear_classifier=None)
             if P['train_mode'] == 'linear_init':
-                P_temp = copy.deepcopy(P) # re-set hyperparameter dict
                 P_temp['save_path'] = P['save_path'] + '_fine_tuned_from_linear'
                 os.makedirs(P_temp['save_path'], exist_ok=False)
                 P_temp['train_mode'] = 'end_to_end'
@@ -326,7 +335,10 @@ if __name__ == '__main__':
                 P_temp['freeze_feature_extractor'] = False
                 P_temp['use_feats'] = False
                 P_temp['arch'] = 'resnet50'
-                (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P_temp, feature_extractor=feature_extractor, linear_classifier=linear_classifier, estimated_labels=estimated_labels)
+                (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P_temp, feature_extractor=feature_extractor_init, linear_classifier=linear_classifier_init, estimated_labels=estimated_labels_init)
+            else:
+                os.makedirs(P['save_path'], exist_ok=False)
+                (feature_extractor, linear_classifier, estimated_labels, logs) = execute_training_run(P_temp, feature_extractor=None, linear_classifier=None)
             # keep track of the best run: 
             best_epoch = np.argmax([logs['metrics']['val'][epoch][P_temp['stop_metric'] + '_' + P_temp['val_set_variant']] for epoch in range(P_temp['num_epochs'])])
             val_score = logs['metrics']['val'][best_epoch][P_temp['stop_metric'] + '_' + P_temp['val_set_variant']]
