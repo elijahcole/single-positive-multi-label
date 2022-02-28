@@ -30,7 +30,7 @@ def get_metadata(dataset_name):
         meta = {
             'num_classes': 312,
             'path_to_dataset': 'data/cub',
-            'path_to_images': 'data/cub/CUB_200_2011'
+            'path_to_images': 'data/cub/CUB_200_2011/CUB_200_2011/images'
         }
     else:
         raise NotImplementedError('Metadata dictionary not implemented.')

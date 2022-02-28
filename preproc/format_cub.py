@@ -12,6 +12,8 @@ args = pp.parse_args()
 NUM_ATTRIBUTES = 312
 NUM_INSTANCES = 11788
 
+args.load_path = os.path.join(args.load_path, 'CUB_200_2011')
+
 # get list of images: 
 images_df = pd.read_csv(
     os.path.join(args.load_path, 'CUB_200_2011', 'images.txt'),
@@ -67,10 +69,10 @@ for i in range(NUM_INSTANCES):
         k += 1
     if splits_np[i] == 1:
         labels_train.append(label_vector)
-        images_train.append(str(images_np[i]))
+        images_train.append(str(images_np[i][0]))
     else:
         labels_test.append(label_vector)
-        images_test.append(str(images_np[i]))
+        images_test.append(str(images_np[i][0]))
 
 np.save(os.path.join(args.save_path, 'formatted_train_labels.npy'), np.array(labels_train))
 np.save(os.path.join(args.save_path, 'formatted_train_images.npy'), np.array(images_train))
