@@ -23,7 +23,7 @@ To generate different entries of the main table, modify the following parameters
 ## Hyperparameter Search
 As written, `train.py` will run a hyperparameter search over a few different learning rates and batch sizes, save the results for all runs, and report the best run. If desired, modify the code at the bottom of `train.py` to search over different parameter settings. 
 
-**The `linear_init` mode searches over hyperparameters for the fine-tuning phase only.** The hyperparameters for the linear training phase are fixed. In particular, `linear_init_lr` and `linear_init_bsize` should be set to the best learning rate and batch size from a `linear_fixed_features` hyperparameter search.
+**The `linear_init` mode searches over hyperparameters for the fine-tuning phase only.** The hyperparameters for the linear training phase are fixed. In particular, `linear_init_lr` and `linear_init_bsize` are set to the best learning rate and batch size from a `linear_fixed_features` hyperparameter search. 
 
 ## Misc
 * The `requirements.txt` files was generated using the wonderful tool [pipreqs](https://github.com/bndr/pipreqs).

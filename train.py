@@ -237,6 +237,20 @@ if __name__ == '__main__':
             'coco': 2.9,
             'nuswide': 1.9,
             'cub': 31.4
+        },
+        'linear_init_params': { # best learning rate and batch size for linear_fixed_features phase of linear_init
+            'an_ls': {
+                'pascal': {'linear_init_lr': 1e-4, 'linear_init_bsize': 8},
+                'coco': {'linear_init_lr': 1e-4, 'linear_init_bsize': 8},
+                'nuswide': {'linear_init_lr': 1e-4, 'linear_init_bsize': 16},
+                'cub': {'linear_init_lr': 1e-4, 'linear_init_bsize': 8}
+            },
+            'role': {
+                'pascal': {'linear_init_lr': 1e-3, 'linear_init_bsize': 16},
+                'coco': {'linear_init_lr': 1e-3, 'linear_init_bsize': 16},
+                'nuswide': {'linear_init_lr': 1e-3, 'linear_init_bsize': 16},
+                'cub': {'linear_init_lr': 1e-3, 'linear_init_bsize': 8}
+            }
         }
     }
 
@@ -254,8 +268,8 @@ if __name__ == '__main__':
     P['save_path'] = './results'
 
     # Optimization parameters:
-    P['linear_init_lr'] = 1e-3 # learning rate for linear_fixed_features phase of linear_init (try linear_fixed_features first to determine the right values)
-    P['linear_init_bsize'] = 16 # batch size for linear_fixed_features phase of linear_init (try linear_fixed_features first to determine the right values)
+    P['linear_init_lr'] = lookup['linear_init_params'][P['loss']][P['dataset']]['linear_init_lr']
+    P['linear_init_bsize'] = lookup['linear_init_params'][P['loss']][P['dataset']]['linear_init_bsize']
     P['lr_mult'] = 10.0 # learning rate multiplier for the parameters of g
     P['stop_metric'] = 'map' # metric used to select the best epoch
     
