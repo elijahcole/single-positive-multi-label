@@ -268,8 +268,9 @@ if __name__ == '__main__':
     P['save_path'] = './results'
 
     # Optimization parameters:
-    P['linear_init_lr'] = lookup['linear_init_params'][P['loss']][P['dataset']]['linear_init_lr']
-    P['linear_init_bsize'] = lookup['linear_init_params'][P['loss']][P['dataset']]['linear_init_bsize']
+    if P['train_mode'] == 'linear_init':
+        P['linear_init_lr'] = lookup['linear_init_params'][P['loss']][P['dataset']]['linear_init_lr']
+        P['linear_init_bsize'] = lookup['linear_init_params'][P['loss']][P['dataset']]['linear_init_bsize']
     P['lr_mult'] = 10.0 # learning rate multiplier for the parameters of g
     P['stop_metric'] = 'map' # metric used to select the best epoch
     
