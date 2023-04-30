@@ -1,0 +1,6 @@
+logs/*
+results/*
+data/coco/*.npy
+data/coco/crowdsourcing_data_val2014/*
+data/pascal/*.npy
+*.png
