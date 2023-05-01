@@ -4,7 +4,7 @@ import random
 import json
 import math
 import os
-#  from distributions import cat_name_to_weights, cat_id_to_cat_name
+from semantic_distribution import cat_name_to_weights, cat_id_to_cat_name
 
 
 DATA_PATH = '../data/coco'
@@ -158,52 +158,48 @@ def get_ordered_weights(cat_name_to_weights, cat_id_to_index, cat_name_to_cat_id
     return ordered_weights
 
 
-def make_biased_matrix_emp(weights, bias_type):
-    N = 5
-    SEED = 10
-    for n in range(1, N+1):
-        random.seed(SEED)
-        SEED += 1234
-        for split in ['train', 'val']:
-            D = files[split]
-            image_id_list = sorted(np.unique([str(D['annotations'][i]['image_id']) for i in range(len(D['annotations']))]))
-            image_id_list = np.array(image_id_list, dtype=int)
-            image_id_to_index = {image_id_list[i]: i for i in range(len(image_id_list))}
+def make_biased_matrix_emp(weights, bias_type, SEED):
+    random.seed(SEED)
+    for split in ['train', 'val']:
+        D = files[split]
+        image_id_list = sorted(np.unique([str(D['annotations'][i]['image_id']) for i in range(len(D['annotations']))]))
+        image_id_list = np.array(image_id_list, dtype=int)
+        image_id_to_index = {image_id_list[i]: i for i in range(len(image_id_list))}
 
-            label_matrix = np.load(os.path.join(DATA_PATH, 'formatted_{}_labels.npy'.format(split)))
-            biased_matrix = np.zeros_like(label_matrix)
-            totalx = 0
-            counter = 0
-            for k in range(len(image_id_list)):
-                totalx += 1
-                im_id = image_id_list[k]
-                row_idx = image_id_to_index[im_id]
-                labels = label_matrix[row_idx][:]
-                assert len(labels) == len(weights), f'len(labels) = {len(labels)}, len(weights) = {len(weights)}'
-                curr_weights = [0 for _ in range(len(weights))]
-                valid_indices = []
-                for i in range(len(labels)):
-                    if not labels[i] == 0:
-                        curr_weights[i] = weights[i]
-                        valid_indices.append(i)
-                        # if not weights[i] == 0:
-                        #     flag = True
-                        # curr_weights[i] = 0
-                        # if flag:
-                        #     assert not weights[i] == 0
-                test_w = np.unique(curr_weights)
-                if len(test_w) == 1:  # if all weights are zero, choose any
-                    counter += 1
-                    assert test_w[0] == 0
-                    col_idx = random.choice(valid_indices)
-                else:
-                    col_idx = random.choices(range(len(labels)), curr_weights)[0]
-                assert label_matrix[row_idx][col_idx] == 1
-                biased_matrix[row_idx][col_idx] = 1
-            np.save(os.path.join(labels_path,
-                                'coco_formatted_{}_{}_{}_labels_obs.npy'.format(split, bias_type, n)),
-                                biased_matrix)
-            print(counter/totalx)
+        label_matrix = np.load(os.path.join(DATA_PATH, 'formatted_{}_labels.npy'.format(split)))
+        biased_matrix = np.zeros_like(label_matrix)
+        totalx = 0
+        counter = 0
+        for k in range(len(image_id_list)):
+            totalx += 1
+            im_id = image_id_list[k]
+            row_idx = image_id_to_index[im_id]
+            labels = label_matrix[row_idx][:]
+            assert len(labels) == len(weights), f'len(labels) = {len(labels)}, len(weights) = {len(weights)}'
+            curr_weights = [0 for _ in range(len(weights))]
+            valid_indices = []
+            for i in range(len(labels)):
+                if not labels[i] == 0:
+                    curr_weights[i] = weights[i]
+                    valid_indices.append(i)
+                    # if not weights[i] == 0:
+                    #     flag = True
+                    # curr_weights[i] = 0
+                    # if flag:
+                    #     assert not weights[i] == 0
+            test_w = np.unique(curr_weights)
+            if len(test_w) == 1:  # if all weights are zero, choose any
+                counter += 1
+                assert test_w[0] == 0
+                col_idx = random.choice(valid_indices)
+            else:
+                col_idx = random.choices(range(len(labels)), curr_weights)[0]
+            assert label_matrix[row_idx][col_idx] == 1
+            biased_matrix[row_idx][col_idx] = 1
+        np.save(os.path.join(DATA_PATH,
+                            f'coco_formatted_{split}_{bias_type}_labels_obs.npy'),
+                            biased_matrix)
+        print(counter/totalx)
 
 
 # def get_imID_to_dims():

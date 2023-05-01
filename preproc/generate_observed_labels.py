@@ -1,4 +1,4 @@
-from preproc.biased_labels import observe_bias
+from biased_labels import observe_bias
 import numpy as np
 import os
 import argparse
