@@ -2,13 +2,17 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
+# TODO
+# DATA_PATH = '../data/coco/annotations/'
+DATA_PATH = '/media/julioarroyo/aspen/data_COCO/coco/annotations/'
+
 cat_name_to_weights = None
 cat_id_to_cat_name = None
 
 def get_anns_by_imID():
     imID_to_anns = {}
     for phase in ['val']:
-        f_val = open('instances_val2014.json')
+        f_val = open(DATA_PATH + 'instances_val2014.json')
         D = json.load(f_val)
         for i in range(len(D['annotations'])):
             if not D['annotations'][i]['image_id'] in imID_to_anns:
@@ -49,7 +53,7 @@ def get_bboxes_by_imID(coco):
 def get_imID_to_dims():
     imID_to_dims = {}
     for phase in ['val']:
-        f = open('instances_{}2014.json'.format(phase))
+        f = open(DATA_PATH + 'instances_{}2014.json'.format(phase))
         D = json.load(f)
         for i in range(len(D['images'])):
             imID_to_dims[D['images'][i]['id']] = [D['images'][i]['width'], D['images'][i]['height']]
@@ -66,7 +70,7 @@ def point_in_bbox(x, y, im_id, cat, imID_to_cat_to_bboxes):
 
 
 def get_cat_id_to_cat_name():
-    cat_list_f = open('categories.json')
+    cat_list_f = open('semantic_bias/categories.json')
     cat_list = json.load(cat_list_f)
     cat_id_2_cat_name = {}  # map: cat_id --> cat_name
     cat_name_2_cat_id = {}
@@ -78,13 +82,13 @@ def get_cat_id_to_cat_name():
 
 
 def compare_files():
-    f1 = open('crowdsourcing_instance_spotting_val2014.json')
+    f1 = open('semantic_bias/crowdsourcing_instance_spotting_val2014.json')
     annotations1 = json.load(f1)
     imids1 = set()
     for ann in annotations1:
         imids1.add(ann['im_id'])
 
-    f2 = open('crowdsourcing_annotate_category_val2014.json')
+    f2 = open('semantic_bias/crowdsourcing_annotate_category_val2014.json')
     annotations2 = json.load(f2)
     imids2 = set()
     for ann in annotations2:
@@ -94,7 +98,7 @@ def compare_files():
     print('number of shared imids {}'.format(len(overlap)))
     print(f'instance has {len(imids1)} while annotate has {len(imids2)} unique image ids')
 
-    f3 = open('instances_val2014.json')
+    f3 = open(DATA_PATH + 'instances_val2014.json')
     D = json.load(f3)
     imids3 = set()
     for i in range(len(D['annotations'])):
@@ -120,8 +124,8 @@ if mode == 'run':
     cat_id_to_cat_name = get_cat_id_to_cat_name()
     avg_weights = np.zeros((len(cat_id_to_cat_name),))
     count = 0
-    for f in ['crowdsourcing_annotate_category_val2014.json',
-                'crowdsourcing_instance_spotting_val2014.json']:
+    for f in ['semantic_bias/crowdsourcing_annotate_category_val2014.json',
+              'semantic_bias/crowdsourcing_instance_spotting_val2014.json']:
         f = open(f)
         annotations = json.load(f)
         (cat_to_imgs, im_id_to_anns) = get_dicts(annotations)

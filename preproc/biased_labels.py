@@ -1,4 +1,3 @@
-from format_coco import parse_categories
 import numpy as np
 import random
 import json
@@ -42,7 +41,7 @@ def observe_bias(bias_type: str, phase: str, seed: int) -> np.ndarray:
         (category_list, cat_id_to_index, cat_name_to_cat_id) = parse_categories(files['train']['categories'])
         return make_biased_matrix(imID_to_anns, bias_type,
                                   len(category_list), cat_id_to_index,
-                                  seed, files, phase)
+                                  seed, phase)
     elif bias_type == 'empirical':
         # print(f'THIS SHOULD NOT BE NONE: {cat_name_to_weights}')  # TODO: MAKE SURE IT IS IMPORTED CORRECTLY
         (category_list, cat_id_to_index, cat_name_to_cat_id) = parse_categories(files['val']['categories'])
@@ -62,6 +61,15 @@ def observe_bias(bias_type: str, phase: str, seed: int) -> np.ndarray:
         assert len(ordered_weights) == len(cat_name_to_cat_id)
         return make_biased_matrix_emp(ordered_weights, bias_type)
 
+def parse_categories(categories):
+    category_list = []
+    id_to_index = {}
+    cat_name_to_cat_id = {}
+    for i in range(len(categories)):
+        category_list.append(categories[i]['name'])
+        id_to_index[categories[i]['id']] = i
+        cat_name_to_cat_id[categories[i]['name']] = categories[i]['id']
+    return (category_list, id_to_index, cat_name_to_cat_id)
 
 def get_anns_by_imID():
     imID_to_anns = {}
