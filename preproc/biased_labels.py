@@ -7,9 +7,21 @@ import os
 from semantic_distribution import cat_name_to_weights, cat_id_to_cat_name
 
 
+# TODO: delete
+# data_path = '/media/julioarroyo/new_aspen/data'
+# coco_path = '/coco/annotations/'
+# labels_path = '/home/julioarroyo/research_Eli_and_Julio/single-positive-multi-label-julio/data/coco'
+
+
 DATA_PATH = '../data/coco'
-f_train = open(DATA_PATH + '/annotations/instances_train2014.json')
-f_val = open(DATA_PATH + 'instances_val2014.json')
+# TODO: uncomment
+# f_train = open(DATA_PATH + '/annotations/instances_train2014.json')
+# f_val = open(DATA_PATH + '/annotations/instances_val2014.json')
+
+# TODO: delete
+LABELS_PATH = '/media/julioarroyo/aspen/data_COCO/coco'
+f_train = open(LABELS_PATH + '/annotations/instances_train2014.json')
+f_val = open(LABELS_PATH + '/annotations/instances_val2014.json')
 files = {'train' : json.load(f_train), 'val' : json.load(f_val)}
 
 
@@ -48,7 +60,7 @@ def observe_bias(bias_type: str, phase: str, seed: int) -> np.ndarray:
                 count_zero_weights += 1
         
         assert len(ordered_weights) == len(cat_name_to_cat_id)
-        make_biased_matrix_emp(ordered_weights, bias_type)
+        return make_biased_matrix_emp(ordered_weights, bias_type)
 
 
 def get_anns_by_imID():
@@ -92,7 +104,7 @@ def get_loc_bias_norm_constant(annotations, imID_to_dims):
 
 
 def make_biased_matrix(imID_to_anns, bias_type, num_categories,
-                       cat_id_to_index, rand_seed, files, phase):    
+                       cat_id_to_index, rand_seed, phase):    
     random.seed(rand_seed)
     split = phase
     D = files[split]
@@ -158,48 +170,46 @@ def get_ordered_weights(cat_name_to_weights, cat_id_to_index, cat_name_to_cat_id
     return ordered_weights
 
 
-def make_biased_matrix_emp(weights, bias_type, SEED):
+def make_biased_matrix_emp(weights, bias_type, SEED, split):
     random.seed(SEED)
-    for split in ['train', 'val']:
-        D = files[split]
-        image_id_list = sorted(np.unique([str(D['annotations'][i]['image_id']) for i in range(len(D['annotations']))]))
-        image_id_list = np.array(image_id_list, dtype=int)
-        image_id_to_index = {image_id_list[i]: i for i in range(len(image_id_list))}
+    D = files[split]
+    image_id_list = sorted(np.unique([str(D['annotations'][i]['image_id']) for i in range(len(D['annotations']))]))
+    image_id_list = np.array(image_id_list, dtype=int)
+    image_id_to_index = {image_id_list[i]: i for i in range(len(image_id_list))}
 
-        label_matrix = np.load(os.path.join(DATA_PATH, 'formatted_{}_labels.npy'.format(split)))
-        biased_matrix = np.zeros_like(label_matrix)
-        totalx = 0
-        counter = 0
-        for k in range(len(image_id_list)):
-            totalx += 1
-            im_id = image_id_list[k]
-            row_idx = image_id_to_index[im_id]
-            labels = label_matrix[row_idx][:]
-            assert len(labels) == len(weights), f'len(labels) = {len(labels)}, len(weights) = {len(weights)}'
-            curr_weights = [0 for _ in range(len(weights))]
-            valid_indices = []
-            for i in range(len(labels)):
-                if not labels[i] == 0:
-                    curr_weights[i] = weights[i]
-                    valid_indices.append(i)
-                    # if not weights[i] == 0:
-                    #     flag = True
-                    # curr_weights[i] = 0
-                    # if flag:
-                    #     assert not weights[i] == 0
-            test_w = np.unique(curr_weights)
-            if len(test_w) == 1:  # if all weights are zero, choose any
-                counter += 1
-                assert test_w[0] == 0
-                col_idx = random.choice(valid_indices)
-            else:
-                col_idx = random.choices(range(len(labels)), curr_weights)[0]
-            assert label_matrix[row_idx][col_idx] == 1
-            biased_matrix[row_idx][col_idx] = 1
-        np.save(os.path.join(DATA_PATH,
-                            f'coco_formatted_{split}_{bias_type}_labels_obs.npy'),
-                            biased_matrix)
-        print(counter/totalx)
+    label_matrix = np.load(os.path.join(DATA_PATH, 'formatted_{}_labels.npy'.format(split)))
+    biased_matrix = np.zeros_like(label_matrix)
+    totalx = 0
+    counter = 0
+    for k in range(len(image_id_list)):
+        totalx += 1
+        im_id = image_id_list[k]
+        row_idx = image_id_to_index[im_id]
+        labels = label_matrix[row_idx][:]
+        assert len(labels) == len(weights), f'len(labels) = {len(labels)}, len(weights) = {len(weights)}'
+        curr_weights = [0 for _ in range(len(weights))]
+        valid_indices = []
+        for i in range(len(labels)):
+            if not labels[i] == 0:
+                curr_weights[i] = weights[i]
+                valid_indices.append(i)
+                # if not weights[i] == 0:
+                #     flag = True
+                # curr_weights[i] = 0
+                # if flag:
+                #     assert not weights[i] == 0
+        test_w = np.unique(curr_weights)
+        if len(test_w) == 1:  # if all weights are zero, choose any
+            counter += 1
+            assert test_w[0] == 0
+            col_idx = random.choice(valid_indices)
+        else:
+            col_idx = random.choices(range(len(labels)), curr_weights)[0]
+        assert label_matrix[row_idx][col_idx] == 1
+        biased_matrix[row_idx][col_idx] = 1
+    
+    print(counter/totalx)
+    return biased_matrix
 
 
 # def get_imID_to_dims():
