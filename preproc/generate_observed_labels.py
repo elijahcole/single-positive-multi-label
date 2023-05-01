@@ -8,7 +8,7 @@ pp.add_argument('--dataset', type=str, choices=['pascal', 'coco', 'nuswide', 'cu
 pp.add_argument('--num-pos', type=int, default=1, required=False, help='number of positive labels per image')
 pp.add_argument('--num-neg', type=int, default=0, required=False, help='number of negative labels per image')
 pp.add_argument('--seed', type=int, default=1200, required=False, help='random seed')
-pp.add_argument('--bias_type', type=str, default='uniform', required=False, help='uniform, size, loc, semantic')
+pp.add_argument('--bias-type', type=str, default='uniform', choices=['uniform', 'size', 'loc', 'semantic'], required=False, help='uniform, size, loc, semantic')
 args = pp.parse_args()
 
 def get_random_label_indices(label_vec, label_value, num_sel, rng):
@@ -86,5 +86,5 @@ for phase in ['train', 'val']:
             raise NotImplementedError(msg)
 
     # save observed labels:
-    np.save(os.path.join(base_path, f'formatted_{phase}_{args.bias_type}_labels_obs.npy'),
+    np.save(os.path.join(base_path, f'TODO_formatted_{phase}_{args.bias_type}_labels_obs.npy'),
             label_matrix_obs)
