@@ -1,6 +1,8 @@
-# Multi-Label Learning from Single Positive Labels
+# Understanding Label Bias in Single Positive Multi-Label Learning
 
-Code to reproduce the main results in the paper [Multi-Label Learning from Single Positive Labels](https://arxiv.org/abs/2106.09708) (CVPR 2021). 
+Code to reproduce the main results in the paper [Understanding Label Bias in Single Positive Multi-Label Learning](https://openreview.net/forum?id=iWiwox99aJ) (ICLR 2023)
+
+Adding on to the work presented by [Multi-Label Learning from Single Positive Labels](https://arxiv.org/abs/2106.09708) (CVPR 2021). 
 
 ## Getting Started
 
@@ -34,15 +36,11 @@ As written, `train.py` will run a hyperparameter search over a few different lea
 If you find our work useful in your research please consider citing our paper:  
 
 ```latex
-@inproceedings{cole2021multi,
-  title={Multi-Label Learning from Single Positive Labels},
-  author={Cole, Elijah and 
-          Mac Aodha, Oisin and 
-          Lorieul, Titouan and 
-          Perona, Pietro and 
-          Morris, Dan and 
-          Jojic, Nebojsa},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  year={2021}
+@misc{
+arroyo2023understanding,
+title={Understanding Label Bias in Single Positive Multi-Label Learning},
+author={Julio Arroyo and Pietro Perona and Elijah Cole},
+year={2023},
+url={https://openreview.net/forum?id=iWiwox99aJ}
 }
 ```
