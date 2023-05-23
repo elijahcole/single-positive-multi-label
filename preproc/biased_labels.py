@@ -3,7 +3,7 @@ import random
 import json
 import math
 import os
-from semantic_distribution import cat_name_to_weights, cat_id_to_cat_name
+from semantic_distribution import cat_name_to_weights
 
 
 DATA_PATH = '../data/coco'
@@ -24,22 +24,13 @@ def observe_bias(bias_type: str, phase: str, seed: int) -> np.ndarray:
     """
     imID_to_anns = get_anns_by_imID()
 
-    if bias_type == 'size' or bias_type == 'location':
-        # TODO: parse_categories returns only two
+    if bias_type == 'size' or bias_type == 'loc':
         (category_list, cat_id_to_index, cat_name_to_cat_id) = parse_categories(files['train']['categories'])
         return make_biased_matrix(imID_to_anns, bias_type,
                                   len(category_list), cat_id_to_index,
                                   seed, phase)
-    elif bias_type == 'empirical':
-        # print(f'THIS SHOULD NOT BE NONE: {cat_name_to_weights}')  # TODO: MAKE SURE IT IS IMPORTED CORRECTLY
+    elif bias_type == 'semantic':
         (category_list, cat_id_to_index, cat_name_to_cat_id) = parse_categories(files['val']['categories'])
-        # cat_name_to_cat_id = {cat_id_to_cat_name[cat_id]: cat_id for cat_id in cat_id_to_cat_name}
-        set1 = set(cat_name_to_weights.keys())
-        set2 = set(cat_name_to_cat_id.keys())
-        print(f'CAT NAMES IN WEIGHTS BUT NOT IN THE ID MAP{set1-set2}')
-        print(f'CAT NAMES IN ID MAP BUT NOT IN THE WEIGHTS: {set2 - set1}')
-        print(len(cat_name_to_weights))
-        print(len(cat_name_to_cat_id))
         count_zero_weights = 0
         ordered_weights = get_ordered_weights(cat_name_to_weights, cat_id_to_index, cat_name_to_cat_id)
         for weight in ordered_weights:
@@ -47,7 +38,9 @@ def observe_bias(bias_type: str, phase: str, seed: int) -> np.ndarray:
                 count_zero_weights += 1
         
         assert len(ordered_weights) == len(cat_name_to_cat_id)
-        return make_biased_matrix_emp(ordered_weights, bias_type)
+        return make_semantic_bias_matrix(ordered_weights, seed, phase)
+    else:
+        raise NotImplementedError(f"Unrecognized bias type: '{bias_type}'. Use one of `uniform`, `size`, `loc`, `semantic`")
 
 def parse_categories(categories):
     category_list = []
@@ -90,8 +83,8 @@ def get_loc_bias_norm_constant(annotations, imID_to_dims):
     sum_inv_dist = 0
     for ann in annotations:
         center = imID_to_dims[ann['image_id']]
-        x_i = ann['bbox'][0] + ann['bbox'][2]/2 # x-coord. of center of annotation
-        y_i = ann['bbox'][1] + ann['bbox'][3]/2 # y-coord. of center of annotation
+        x_i = ann['bbox'][0] + ann['bbox'][2]/2  # x-coord. of center of annotation
+        y_i = ann['bbox'][1] + ann['bbox'][3]/2  # y-coord. of center of annotation
         d_i = math.sqrt((x_i - center[0])**2 + (y_i - center[1])**2)
         if d_i == 0:
             d_i = 1
@@ -109,13 +102,10 @@ def make_biased_matrix(imID_to_anns, bias_type, num_categories,
     image_id_to_index = {image_id_list[i]: i for i in range(len(image_id_list))}
 
     image_id_and_weights = []
-    total_im_ids = len(image_id_list)
     count = 0
     if bias_type == 'loc':
         imID_to_dims = get_imID_to_dims()
     for im_id in image_id_list:
-        if count % int(total_im_ids*0.05) == 0:
-            print(count/total_im_ids)
         weights_i = [0 for _ in range(num_categories)]
         if bias_type == 'size':
             sum_areas = get_sum_areas(imID_to_anns[im_id])
@@ -166,8 +156,8 @@ def get_ordered_weights(cat_name_to_weights, cat_id_to_index, cat_name_to_cat_id
     return ordered_weights
 
 
-def make_biased_matrix_emp(weights, bias_type, SEED, split):
-    random.seed(SEED)
+def make_semantic_bias_matrix(weights, rand_seed: int, split: str):
+    random.seed(rand_seed)
     D = files[split]
     image_id_list = sorted(np.unique([str(D['annotations'][i]['image_id']) for i in range(len(D['annotations']))]))
     image_id_list = np.array(image_id_list, dtype=int)
@@ -189,11 +179,6 @@ def make_biased_matrix_emp(weights, bias_type, SEED, split):
             if not labels[i] == 0:
                 curr_weights[i] = weights[i]
                 valid_indices.append(i)
-                # if not weights[i] == 0:
-                #     flag = True
-                # curr_weights[i] = 0
-                # if flag:
-                #     assert not weights[i] == 0
         test_w = np.unique(curr_weights)
         if len(test_w) == 1:  # if all weights are zero, choose any
             counter += 1
@@ -203,6 +188,5 @@ def make_biased_matrix_emp(weights, bias_type, SEED, split):
             col_idx = random.choices(range(len(labels)), curr_weights)[0]
         assert label_matrix[row_idx][col_idx] == 1
         biased_matrix[row_idx][col_idx] = 1
-    
-    print(counter/totalx)
+
     return biased_matrix
