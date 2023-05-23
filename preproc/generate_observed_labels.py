@@ -86,5 +86,5 @@ for phase in ['train', 'val']:
             raise NotImplementedError(msg)
 
     # save observed labels:
-    np.save(os.path.join(base_path, f'TODO_formatted_{phase}_{args.bias_type}_labels_obs.npy'),
+    np.save(os.path.join(base_path, f'formatted_{phase}_{args.bias_type}_labels_obs.npy'),
             label_matrix_obs)
