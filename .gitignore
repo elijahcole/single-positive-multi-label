@@ -1,7 +1,0 @@
-logs/*
-results/*
-data/coco/*.npy
-data/coco/crowdsourcing_data_val2014/*
-preproc/semantic_bias/*.json
-data/pascal/*.npy
-*.png

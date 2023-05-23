@@ -2,7 +2,7 @@
 
 Code to reproduce the main results in the paper [Understanding Label Bias in Single Positive Multi-Label Learning](https://openreview.net/forum?id=iWiwox99aJ) (ICLR 2023)
 
-Adding on to the work presented by [Multi-Label Learning from Single Positive Labels](https://arxiv.org/abs/2106.09708) (CVPR 2021). 
+Extending the work presented by [Multi-Label Learning from Single Positive Labels](https://arxiv.org/abs/2106.09708) (CVPR 2021). 
 
 ## Getting Started
 

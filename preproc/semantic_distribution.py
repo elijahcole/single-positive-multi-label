@@ -2,9 +2,8 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-# TODO
-# DATA_PATH = '../data/coco/annotations/'
-DATA_PATH = '/media/julioarroyo/aspen/data_COCO/coco/annotations/'
+
+DATA_PATH = '../data/coco/annotations/'
 
 cat_name_to_weights = None
 cat_id_to_cat_name = None

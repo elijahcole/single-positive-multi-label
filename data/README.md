@@ -110,6 +110,13 @@ Note that NUSWIDE does not have a formatting script. This is because we provide 
 The script `preproc/generate_observed_labels.py` subsamples the entries of a complete label matrix to generate "observed labels" which simulate single positive labeling. To generate observed labels for a given dataset, run:
 ```
 cd /path/to/single-positive/multi-label/preproc
-python generate_observed_labels.py --dataset X --bias-type Y
+python generate_observed_labels.py --dataset X
 ```
-where `X` is replaced by one of {`pascal`, `coco`, `nuswide`, `cub`} and `Y` is replaced by one of {`uniform`, `size`, `loc`, `semantic`}. You will only need to do this once.
+where `X` is replaced by `pascal`, `coco`, `nuswide`, or `cub`. You will only need to do this once.
+
+If you are using the COCO dataset, you additionally have the option to specify the bias according
+to which the positive labels are sampled. To do this, run
+```
+python generate_observed_labels.py --dataset coco --bias-type Y
+```
+where `Y` is replaced by `uniform`, `size`, `loc`, or `semantic`.
