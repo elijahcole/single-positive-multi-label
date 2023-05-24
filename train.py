@@ -261,6 +261,7 @@ if __name__ == '__main__':
     P['loss'] = 'role' # bce, bce_ls, iun, iu, pr, an, an_ls, wan, epr, role
     P['train_mode'] = 'linear_init' # linear_fixed_features, end_to_end, linear_init
     P['val_set_variant'] = 'clean' # clean, observed
+    P['bias_type'] = 'uniform' # uniform, size, loc, semantic
     
     # Paths and filenames:
     P['experiment_name'] = 'multi_label_experiment'
@@ -368,4 +369,3 @@ if __name__ == '__main__':
     print('- batch size:    {}'.format(best_params['bsize']))
     print('- val score:     {}'.format(best_val_score))
     print('- test score:    {}'.format(best_test_score))
-    

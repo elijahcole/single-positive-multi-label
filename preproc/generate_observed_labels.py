@@ -1,13 +1,17 @@
+from biased_labels import observe_bias
 import numpy as np
 import os
 import argparse
+
 
 pp = argparse.ArgumentParser(description='')
 pp.add_argument('--dataset', type=str, choices=['pascal', 'coco', 'nuswide', 'cub'], required=True)
 pp.add_argument('--num-pos', type=int, default=1, required=False, help='number of positive labels per image')
 pp.add_argument('--num-neg', type=int, default=0, required=False, help='number of negative labels per image')
 pp.add_argument('--seed', type=int, default=1200, required=False, help='random seed')
+pp.add_argument('--bias-type', type=str, default='uniform', choices=['uniform', 'size', 'loc', 'semantic'], required=False, help='uniform, size, loc, semantic')
 args = pp.parse_args()
+
 
 def get_random_label_indices(label_vec, label_value, num_sel, rng):
     '''
@@ -74,7 +78,19 @@ for phase in ['train', 'val']:
 
     # choose observed labels, resulting in -1 / 0 / +1 format:
     rng = np.random.RandomState(args.seed)
-    label_matrix_obs = observe_uniform(label_matrix, args.num_pos, args.num_neg, rng)
+    if args.bias_type == 'uniform':
+        label_matrix_obs = observe_uniform(label_matrix, args.num_pos, args.num_neg, rng)
+    else:
+        if args.dataset == 'coco':
+            label_matrix_obs = observe_bias(args.bias_type, phase, args.seed)
+        else:
+            msg = 'The paper "UNDERSTANDING LABEL BIAS IN SINGLE POSITIVE MULTI-LABEL LEARNING" only explores biased labels in the COCO dataset'
+            raise NotImplementedError(msg)
+
+    if args.dataset == 'coco':
+        labels_obs_fname = f'formatted_{phase}_{args.bias_type}_labels_obs.npy'
+    else:
+        labels_obs_fname = f'formatted_{phase}_labels_obs.npy'
 
     # save observed labels:
-    np.save(os.path.join(base_path, 'formatted_{}_labels_obs.npy'.format(phase)), label_matrix_obs)
+    np.save(os.path.join(base_path, labels_obs_fname), label_matrix_obs)
