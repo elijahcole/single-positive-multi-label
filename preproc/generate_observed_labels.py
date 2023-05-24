@@ -87,6 +87,10 @@ for phase in ['train', 'val']:
             msg = 'The paper "UNDERSTANDING LABEL BIAS IN SINGLE POSITIVE MULTI-LABEL LEARNING" only explores biased labels in the COCO dataset'
             raise NotImplementedError(msg)
 
+    if args.dataset == 'coco':
+        labels_obs_fname = f'formatted_{phase}_{args.bias_type}_labels_obs.npy'
+    else:
+        labels_obs_fname = f'formatted_{phase}_labels_obs.npy'
+
     # save observed labels:
-    np.save(os.path.join(base_path, f'formatted_{phase}_{args.bias_type}_labels_obs.npy'),
-            label_matrix_obs)
+    np.save(os.path.join(base_path, labels_obs_fname), label_matrix_obs)
