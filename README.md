@@ -1,6 +1,6 @@
 # Understanding Label Bias in Single Positive Multi-Label Learning
 
-Code to reproduce the main results in the paper [Understanding Label Bias in Single Positive Multi-Label Learning](https://openreview.net/forum?id=iWiwox99aJ&noteId=LFUBo_ipgS) (ICLR 2023, Tiny Papers Track). 
+Code to reproduce the main results in the paper [Understanding Label Bias in Single Positive Multi-Label Learning](http://arxiv.org/abs/2305.15584) (ICLR 2023, Tiny Papers Track). 
 
 This repo is an extension of the code for [Multi-Label Learning from Single Positive Labels](https://arxiv.org/abs/2106.09708) (CVPR 2021), which can be found [here](https://github.com/elijahcole/single-positive-multi-label). The primary difference is that this code provides the ability to study the effect of label bias on the COCO dataset. 
 
