@@ -18,7 +18,7 @@ tar -xf pascal_raw.tar
 ```
 rm pascal_raw.tar
 ```
-5. Download the pre-extracted features for PASCAL from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/pascal`.
+5. Download the pre-extracted features for PASCAL from [here](https://zenodo.org/records/10162606) and copy them to `/path/to/single-positive/multi-label/data/pascal`.
 
 ## COCO
 
@@ -43,7 +43,7 @@ unzip -q coco_val_raw.zip
 rm coco_train_raw.zip
 rm coco_val_raw.zip
 ```
-5. Download the pre-extracted features for COCO from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/coco`.
+5. Download the pre-extracted features for COCO from [here](https://zenodo.org/records/10162606) and copy them to `/path/to/single-positive/multi-label/data/coco`.
 
 ## NUSWIDE
 
@@ -72,9 +72,9 @@ formatted_val_labels.npy
 formatted_train_images.npy
 formatted_val_images.npy
 ```
-from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/nuswide`. Note that these files correspond to the subset of the NUSWIDE dataset that we re-crawled ourselves. 
+from [here](https://zenodo.org/records/10162606) and copy them to `/path/to/single-positive/multi-label/data/nuswide`. Note that these files correspond to the subset of the NUSWIDE dataset that we re-crawled ourselves. 
 
-6. Download the pre-extracted features for NUSWIDE from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/nuswide`.
+6. Download the pre-extracted features for NUSWIDE from [here](https://zenodo.org/records/10162606) and copy them to `/path/to/single-positive/multi-label/data/nuswide`.
 
 ## CUB
 
@@ -94,7 +94,7 @@ tar -xf CUB_200_2011.tgz
 ```
 rm CUB_200_2011.tgz
 ```
-5. Download the pre-extracted features for CUB from [here](https://caltech.box.com/v/single-positive-multi-label) and copy them to `/path/to/single-positive/multi-label/data/cub`.
+5. Download the pre-extracted features for CUB from [here](https://zenodo.org/records/10162606) and copy them to `/path/to/single-positive/multi-label/data/cub`.
 
 # Formatting the Data
 The `preproc` folder contains a few scripts which can be used to produce uniformly formatted image lists and labels:
